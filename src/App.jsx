@@ -1,9 +1,5 @@
 function App() {
-  return (
-    <div>
-      <h1>Telecom CRM</h1>
-    </div>
-  );
+  const { prospects, contacts, opportunities, addProspect, advanceStage } =
+    useCRM();
+  // just UI from here
 }
-
-export default App;

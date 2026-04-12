@@ -4,6 +4,8 @@ import { Metrics } from "./components/Metrics";
 import { Pipeline } from "./components/Pipeline";
 import { Tabs } from "./components/Tabs";
 import { OpportunityDetail } from "./components/OpportunityDetail";
+import { ProspectsTable } from "./components/ProspectsTable";
+import { ContactsTable } from "./components/ContactsTable";
 
 function App() {
   const { prospects, contacts, opportunities, setOpportunityStage, saveNotes } =
@@ -49,14 +51,14 @@ function App() {
             />
           )}
           {activeTab === "Prospects" && (
-            <div className="empty" style={{ padding: "3rem" }}>
-              Prospects view coming soon
-            </div>
+            <ProspectsTable
+              prospects={prospects}
+              contacts={contacts}
+              opportunities={opportunities}
+            />
           )}
           {activeTab === "Contacts" && (
-            <div className="empty" style={{ padding: "3rem" }}>
-              Contacts view coming soon
-            </div>
+            <ContactsTable contacts={contacts} prospects={prospects} />
           )}
         </>
       )}

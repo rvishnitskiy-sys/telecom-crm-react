@@ -53,14 +53,28 @@ export function useCRM() {
   async function setOpportunityStage(id, stage) {
     const opp = opportunities.find((o) => o.id === id);
     if (!opp) return;
-    const updated = await api.opportunities.update(id, { ...opp, stage });
+    const updated = await api.opportunities.update(id, {
+      name: opp.name,
+      value: opp.value,
+      stage: stage,
+      notes: opp.notes,
+      prospect_id: opp.prospectId,
+      key_contact_id: opp.keyContactId,
+    });
     setOpportunities((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 
   async function saveNotes(id, notes) {
     const opp = opportunities.find((o) => o.id === id);
     if (!opp) return;
-    const updated = await api.opportunities.update(id, { ...opp, notes });
+    const updated = await api.opportunities.update(id, {
+      name: opp.name,
+      value: opp.value,
+      stage: opp.stage,
+      notes: notes,
+      prospect_id: opp.prospectId,
+      key_contact_id: opp.keyContactId,
+    });
     setOpportunities((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 

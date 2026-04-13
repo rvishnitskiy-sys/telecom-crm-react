@@ -6,13 +6,27 @@ import { Tabs } from "./components/Tabs";
 import { OpportunityDetail } from "./components/OpportunityDetail";
 import { ProspectsTable } from "./components/ProspectsTable";
 import { ContactsTable } from "./components/ContactsTable";
+import { AddProspectForm } from "./components/AddProspectForm";
+import { AddContactForm } from "./components/AddContactForm";
+import { AddOpportunityForm } from "./components/AddOpportunityForm";
 
 function App() {
-  const { prospects, contacts, opportunities, setOpportunityStage, saveNotes } =
-    useCRM();
+  const {
+    prospects,
+    contacts,
+    opportunities,
+    setOpportunityStage,
+    saveNotes,
+    addProspect,
+    addContact,
+    addOpportunity,
+  } = useCRM();
 
   const [activeTab, setActiveTab] = useState("Pipeline");
   const [selectedOppId, setSelectedOppId] = useState(null);
+  const [showAddProspect, setShowAddProspect] = useState(false);
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [showAddOpportunity, setShowAddOpportunity] = useState(false);
 
   const selectedOpp = opportunities.find((o) => o.id === selectedOppId);
   const selectedProspect = selectedOpp
@@ -26,6 +40,19 @@ function App() {
     <div className="app">
       <div className="header">
         <h1>Telecom CRM</h1>
+        {!selectedOpp && (
+          <div className="header-actions">
+            <button className="btn" onClick={() => setShowAddProspect(true)}>
+              + Add prospect
+            </button>
+            <button className="btn" onClick={() => setShowAddContact(true)}>
+              + Add contact
+            </button>
+            <button className="btn" onClick={() => setShowAddOpportunity(true)}>
+              + Add opportunity
+            </button>
+          </div>
+        )}
       </div>
 
       <Metrics opportunities={opportunities} />
@@ -61,6 +88,28 @@ function App() {
             <ContactsTable contacts={contacts} prospects={prospects} />
           )}
         </>
+      )}
+
+      {showAddProspect && (
+        <AddProspectForm
+          onSave={addProspect}
+          onClose={() => setShowAddProspect(false)}
+        />
+      )}
+      {showAddContact && (
+        <AddContactForm
+          prospects={prospects}
+          onSave={addContact}
+          onClose={() => setShowAddContact(false)}
+        />
+      )}
+      {showAddOpportunity && (
+        <AddOpportunityForm
+          prospects={prospects}
+          contacts={contacts}
+          onSave={addOpportunity}
+          onClose={() => setShowAddOpportunity(false)}
+        />
       )}
     </div>
   );

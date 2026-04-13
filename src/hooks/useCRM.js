@@ -1,99 +1,79 @@
-import { useState } from "react";
-import { loadData, saveData } from "../data/storage";
+import { useState, useEffect } from "react";
+import { api } from "../data/api";
 
 export function useCRM() {
-  const initial = loadData();
+  const [prospects, setProspects] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [prospects, setProspects] = useState(initial.prospects);
-  const [contacts, setContacts] = useState(initial.contacts);
-  const [opportunities, setOpportunities] = useState(initial.opportunities);
-  const [nextIds, setNextIds] = useState(initial.nextIds);
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [prospects, contacts, opportunities] = await Promise.all([
+          api.prospects.getAll(),
+          api.contacts.getAll(),
+          api.opportunities.getAll(),
+        ]);
+        setProspects(prospects);
+        setContacts(contacts);
+        setOpportunities(opportunities);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
-  function save(newProspects, newContacts, newOpportunities, newNextIds) {
-    saveData(newProspects, newContacts, newOpportunities, newNextIds);
+  async function addProspect(data) {
+    const prospect = await api.prospects.create(data);
+    setProspects((prev) => [...prev, prospect]);
   }
 
-  function addProspect({ name, segment, country, website }) {
-    const newProspect = {
-      id: nextIds.nextProspectId,
-      name,
-      segment,
-      country,
-      website,
-    };
-    const newProspects = [...prospects, newProspect];
-    const newNextIds = {
-      ...nextIds,
-      nextProspectId: nextIds.nextProspectId + 1,
-    };
-    setProspects(newProspects);
-    setNextIds(newNextIds);
-    save(newProspects, contacts, opportunities, newNextIds);
+  async function addContact(data) {
+    const contact = await api.contacts.create({
+      ...data,
+      prospect_id: data.prospectId,
+    });
+    setContacts((prev) => [...prev, contact]);
   }
 
-  function addContact({ name, role, prospectId, email, phone }) {
-    const newContact = {
-      id: nextIds.nextContactId,
-      name,
-      role,
-      prospectId,
-      email,
-      phone,
-    };
-    const newContacts = [...contacts, newContact];
-    const newNextIds = { ...nextIds, nextContactId: nextIds.nextContactId + 1 };
-    setContacts(newContacts);
-    setNextIds(newNextIds);
-    save(prospects, newContacts, opportunities, newNextIds);
+  async function addOpportunity(data) {
+    const opportunity = await api.opportunities.create({
+      ...data,
+      prospect_id: data.prospectId,
+      key_contact_id: data.keyContactId,
+    });
+    setOpportunities((prev) => [...prev, opportunity]);
   }
 
-  function addOpportunity({ name, prospectId, keyContactId, value, stage }) {
-    const newOpp = {
-      id: nextIds.nextOppId,
-      name,
-      prospectId,
-      keyContactId,
-      value,
-      stage,
-      notes: "",
-    };
-    const newOpportunities = [...opportunities, newOpp];
-    const newNextIds = { ...nextIds, nextOppId: nextIds.nextOppId + 1 };
-    setOpportunities(newOpportunities);
-    setNextIds(newNextIds);
-    save(prospects, contacts, newOpportunities, newNextIds);
+  async function setOpportunityStage(id, stage) {
+    const opp = opportunities.find((o) => o.id === id);
+    if (!opp) return;
+    const updated = await api.opportunities.update(id, { ...opp, stage });
+    setOpportunities((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 
-  function setOpportunityStage(id, stage) {
-    const newOpportunities = opportunities.map((o) =>
-      o.id === id ? { ...o, stage } : o,
-    );
-    setOpportunities(newOpportunities);
-    save(prospects, contacts, newOpportunities, nextIds);
-  }
-
-  function saveNotes(id, notes) {
-    const newOpportunities = opportunities.map((o) =>
-      o.id === id ? { ...o, notes } : o,
-    );
-    setOpportunities(newOpportunities);
-    save(prospects, contacts, newOpportunities, nextIds);
-  }
-
-  function resetData() {
-    localStorage.clear();
-    window.location.reload();
+  async function saveNotes(id, notes) {
+    const opp = opportunities.find((o) => o.id === id);
+    if (!opp) return;
+    const updated = await api.opportunities.update(id, { ...opp, notes });
+    setOpportunities((prev) => prev.map((o) => (o.id === id ? updated : o)));
   }
 
   return {
     prospects,
     contacts,
     opportunities,
+    loading,
+    error,
     addProspect,
     addContact,
     addOpportunity,
     setOpportunityStage,
     saveNotes,
-    resetData,
   };
 }

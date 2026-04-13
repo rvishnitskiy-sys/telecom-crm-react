@@ -15,6 +15,8 @@ function App() {
     prospects,
     contacts,
     opportunities,
+    loading,
+    error,
     setOpportunityStage,
     saveNotes,
     addProspect,
@@ -35,6 +37,10 @@ function App() {
   const selectedContact = selectedOpp
     ? contacts.find((c) => c.id === selectedOpp.keyContactId)
     : null;
+
+  if (loading) return <div style={{ padding: "2rem" }}>Loading...</div>;
+  if (error)
+    return <div style={{ padding: "2rem", color: "red" }}>Error: {error}</div>;
 
   return (
     <div className="app">

@@ -476,3 +476,96 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+
+.activity-log {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.activity-add {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fafaf8;
+  border: 1px solid #e8e8e6;
+  border-radius: 8px;
+  padding: 12px;
+}
+.activity-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.activity-type-select {
+  width: 110px;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  background: #fff;
+  color: #1a1a1a;
+  outline: none;
+}
+.activity-description {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1a1a1a;
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+}
+.activity-description:focus {
+  border-color: #888;
+}
+.activity-add-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.activity-item {
+  background: #fff;
+  border: 1px solid #e8e8e6;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.activity-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.activity-date {
+  font-size: 11px;
+  color: #bbb;
+}
+.activity-description-text {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+  margin: 0;
+}
+.badge-activity-call {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+.badge-activity-email {
+  background: #eeedfe;
+  color: #3c3489;
+}
+.badge-activity-meeting {
+  background: #faeeda;
+  color: #854f0b;
+}
+.badge-activity-note {
+  background: #f0f0ee;
+  color: #888;
+}

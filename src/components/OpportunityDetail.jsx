@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { STAGES } from "../data/defaultData";
+import { ActivityLog } from "./ActivityLog";
 
 export function OpportunityDetail({
   opportunity,
@@ -85,6 +86,11 @@ export function OpportunityDetail({
               Save notes
             </button>
           </div>
+
+          <div className="detail-section-label" style={{ marginTop: "1.5rem" }}>
+            Activity log
+          </div>
+          <ActivityLog opportunityId={opportunity.id} />
         </div>
 
         <div className="detail-sidebar">

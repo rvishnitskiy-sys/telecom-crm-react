@@ -41,6 +41,14 @@ function normalizeContact(c) {
   };
 }
 
+function normalizeActivity(a) {
+  return {
+    ...a,
+    opportunityId: a.opportunity_id,
+    createdAt: a.created_at,
+  };
+}
+
 export const api = {
   prospects: {
     getAll: () => request("/prospects"),
@@ -80,5 +88,16 @@ export const api = {
         body: JSON.stringify(data),
       }).then(normalizeOpportunity),
     delete: (id) => request("/opportunities/" + id, { method: "DELETE" }),
+  },
+  activities: {
+    getByOpportunity: (opportunityId) =>
+      request("/activities?opportunity_id=" + opportunityId).then((as) =>
+        as.map(normalizeActivity),
+      ),
+    create: (data) =>
+      request("/activities", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }).then(normalizeActivity),
   },
 };

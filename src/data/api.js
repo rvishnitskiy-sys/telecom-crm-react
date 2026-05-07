@@ -1,15 +1,44 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
+function getToken() {
+  return localStorage.getItem("crm_token");
+}
+
 async function request(path, options = {}) {
+  const token = getToken();
   const response = await fetch(BASE_URL + path, {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: "Bearer " + token } : {}),
+    },
     ...options,
   });
+  if (response.status === 401) {
+    localStorage.removeItem("crm_token");
+    localStorage.removeItem("crm_username");
+    window.location.href = "/";
+    return;
+  }
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || "Request failed");
   }
   return response.json();
+}
+
+function normalizeOpportunity(o) {
+  return {
+    ...o,
+    prospectId: o.prospect_id,
+    keyContactId: o.key_contact_id,
+  };
+}
+
+function normalizeContact(c) {
+  return {
+    ...c,
+    prospectId: c.prospect_id,
+  };
 }
 
 export const api = {
@@ -53,18 +82,3 @@ export const api = {
     delete: (id) => request("/opportunities/" + id, { method: "DELETE" }),
   },
 };
-
-function normalizeOpportunity(o) {
-  return {
-    ...o,
-    prospectId: o.prospect_id,
-    keyContactId: o.key_contact_id,
-  };
-}
-
-function normalizeContact(c) {
-  return {
-    ...c,
-    prospectId: c.prospect_id,
-  };
-}

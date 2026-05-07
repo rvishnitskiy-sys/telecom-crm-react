@@ -9,8 +9,14 @@ import { ContactsTable } from "./components/ContactsTable";
 import { AddProspectForm } from "./components/AddProspectForm";
 import { AddContactForm } from "./components/AddContactForm";
 import { AddOpportunityForm } from "./components/AddOpportunityForm";
+import { useAuth } from "./auth/AuthContext";
+import { LoginPage } from "./components/LoginPage";
 
 function App() {
+  const { token, username, logout } = useAuth();
+
+  if (!token) return <LoginPage />;
+
   const {
     prospects,
     contacts,
@@ -46,19 +52,28 @@ function App() {
     <div className="app">
       <div className="header">
         <h1>Telecom CRM</h1>
-        {!selectedOpp && (
-          <div className="header-actions">
-            <button className="btn" onClick={() => setShowAddProspect(true)}>
-              + Add prospect
-            </button>
-            <button className="btn" onClick={() => setShowAddContact(true)}>
-              + Add contact
-            </button>
-            <button className="btn" onClick={() => setShowAddOpportunity(true)}>
-              + Add opportunity
-            </button>
-          </div>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {!selectedOpp && (
+            <div className="header-actions">
+              <button className="btn" onClick={() => setShowAddProspect(true)}>
+                + Add prospect
+              </button>
+              <button className="btn" onClick={() => setShowAddContact(true)}>
+                + Add contact
+              </button>
+              <button
+                className="btn"
+                onClick={() => setShowAddOpportunity(true)}
+              >
+                + Add opportunity
+              </button>
+            </div>
+          )}
+          <span style={{ fontSize: "13px", color: "#888" }}>{username}</span>
+          <button className="btn" onClick={logout}>
+            Sign out
+          </button>
+        </div>
       </div>
 
       <Metrics opportunities={opportunities} />

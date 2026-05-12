@@ -26,7 +26,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Upload test report on failure
         if: failure()

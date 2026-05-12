@@ -4,7 +4,10 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 30000,
   use: {
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173',
     headless: true,
+    extraHTTPHeaders: {
+      'Content-Type': 'application/json',
+    },
   },
 });

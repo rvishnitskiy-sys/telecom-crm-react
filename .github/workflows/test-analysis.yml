@@ -1,0 +1,36 @@
+name: Test Failure Analysis
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  analyse:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            The CI Playwright test suite just failed on this repository.
+            
+            1. Read the failed workflow logs from the triggering run
+            2. Identify which tests failed and their error messages
+            3. Map each failure to the @REQ-XXX annotation in the test file
+            4. For each failing test post a structured comment with:
+               - TC ID and test name
+               - REQ ID it covers
+               - Exact error message
+               - Most likely root cause
+               - Suggested fix direction
+            
+            Be specific. Reference actual file names and line numbers.
+            Do not give generic advice.

@@ -2,6 +2,12 @@
 
 
 
+\## Baseline documentation
+
+Read baseline-react.md before making any changes. It describes all existing components, routing, API calls, and UI patterns.
+
+
+
 \## Project overview
 
 B2B telecom CRM frontend. React app consuming the Express REST API.

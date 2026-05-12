@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 30000,
   use: {
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3000',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5173',
     headless: true,
   },
 });
